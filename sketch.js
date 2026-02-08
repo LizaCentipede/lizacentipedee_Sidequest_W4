@@ -28,7 +28,7 @@ function preload() {
 
 function setup() {
   // Create the player once (it will be respawned per level).
-  player = new BlobPlayer();
+  player = new SquarePlayer();
 
   // Load the first level.
   loadLevel(0);
@@ -45,17 +45,23 @@ function draw() {
 
   // 2) Update and draw the player on top of the world
   player.update(world.platforms);
-  player.draw(world.theme.blob);
+
+  // Respawn if player falls below the canvas
+  if (player.y - player.r > height) {
+    player.spawnFromLevel(world);
+  }
+
+  player.draw(world.theme.square);
 
   // 3) HUD
   fill(0);
   text(world.name, 10, 18);
-  text("Move: A/D or ←/→ • Jump: Space/W/↑ • Next: N", 10, 36);
+  text("Move: A/D or ←/→ • Boost: ↑ • Jump: Space/W • Next: N", 10, 36);
 }
 
 function keyPressed() {
   // Jump keys
-  if (key === " " || key === "W" || key === "w" || keyCode === UP_ARROW) {
+  if (key === " " || key === "W" || key === "w") {
     player.jump();
   }
 
@@ -79,7 +85,7 @@ function loadLevel(i) {
   world = new WorldLevel(data.levels[levelIndex]);
 
   // Fit canvas to world geometry (or defaults if needed).
-  const W = world.inferWidth(640);
+  const W = world.inferWidth(900);
   const H = world.inferHeight(360);
   resizeCanvas(W, H);
 

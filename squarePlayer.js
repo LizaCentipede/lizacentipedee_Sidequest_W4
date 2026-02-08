@@ -1,29 +1,4 @@
-/*
-BlobPlayer.js (Example 5)
-
-BlobPlayer owns all "dynamic" player state:
-- position (x,y), radius (r)
-- velocity (vx,vy)
-- movement tuning (accel, friction, max run)
-- jump state (onGround)
-- blob rendering animation parameters (noise wobble)
-
-It also implements:
-- update() for physics + collision against platforms
-- jump() for input
-- draw() for the "breathing blob" look
-
-The algorithm is the same as the original blob world example from Week 2: 
-- Apply input acceleration
-- Apply friction
-- Apply gravity
-- Compute an AABB (box) around the blob
-- Move box in X and resolve collisions
-- Move box in Y and resolve collisions
-- Write back box center to blob position
-*/
-
-class BlobPlayer {
+class SquarePlayer {
   constructor() {
     // ----- Transform -----
     this.x = 0;
@@ -35,8 +10,8 @@ class BlobPlayer {
     this.vy = 0;
 
     // ----- Movement tuning (matches your original values) -----
-    this.accel = 0.55;
-    this.maxRun = 4.0;
+    this.accel = 0.75;
+    this.maxRun = 6.0;
 
     // Physics values that are typically overridden per level.
     this.gravity = 0.65;
@@ -48,10 +23,10 @@ class BlobPlayer {
     // Friction:
     // - in air: almost no friction (keeps momentum)
     // - on ground: more friction (stops more quickly)
-    this.frictionAir = 0.995;
-    this.frictionGround = 0.88;
+    this.frictionAir = 0.98;
+    this.frictionGround = 0.75;
 
-    // ----- Blob rendering / animation -----
+    // ----- Square rendering / animation -----
     this.t = 0;
     this.tSpeed = 0.01;
     this.wobble = 7;
@@ -80,7 +55,7 @@ class BlobPlayer {
   Update movement + resolve collisions against all platforms.
 
   Input is polled with keyIsDown to get smooth movement (held keys).
-  This keeps the behavior aligned with your original blob example. 
+  This keeps the behavior aligned with your original square example. 
   */
   update(platforms) {
     // 1) Horizontal input (A/D or arrows)
@@ -88,19 +63,26 @@ class BlobPlayer {
     if (keyIsDown(65) || keyIsDown(LEFT_ARROW)) move -= 1;
     if (keyIsDown(68) || keyIsDown(RIGHT_ARROW)) move += 1;
 
+    // Check if holding up arrow while moving horizontally for speed boost
+    let speedBoost = 1.0;
+    if (move !== 0 && keyIsDown(UP_ARROW)) {
+      speedBoost = 1.5; // 50% speed increase when holding up arrow
+    }
+
     // 2) Apply horizontal acceleration based on input
-    this.vx += this.accel * move;
+    this.vx += this.accel * move * speedBoost;
 
     // 3) Apply friction (ground vs air)
     this.vx *= this.onGround ? this.frictionGround : this.frictionAir;
 
-    // 4) Clamp max run speed
-    this.vx = constrain(this.vx, -this.maxRun, this.maxRun);
+    // 4) Clamp max run speed (also boosted when up arrow held)
+    const maxSpeed = this.maxRun * speedBoost;
+    this.vx = constrain(this.vx, -maxSpeed, maxSpeed);
 
     // 5) Apply gravity every frame
     this.vy += this.gravity;
 
-    // 6) Build an AABB around the blob (center/radius -> box)
+    // 6) Build an AABB around the square (center/radius -> box)
     let box = {
       x: this.x - this.r,
       y: this.y - this.r,
@@ -144,14 +126,14 @@ class BlobPlayer {
       }
     }
 
-    // 9) Write back blob center from box position
+    // 9) Write back square center from box position
     this.x = box.x + box.w / 2;
     this.y = box.y + box.h / 2;
 
     // 10) Optional: keep player within canvas horizontally.
     this.x = constrain(this.x, this.r, width - this.r);
 
-    // 11) Advance blob animation time
+    // 11) Advance square animation time
     this.t += this.tSpeed;
   }
 
@@ -163,35 +145,12 @@ class BlobPlayer {
   }
 
   /*
-  Draw the blob with a wobbly outline:
-  - we sample a noise value around the circle
-  - perturb the radius slightly per vertex
-  - this creates an organic "breathing"”" look
-
-  This is the same technique as the original drawBlob() function. 
+  Draw the square with solid color.
   */
   draw(colourHex) {
     fill(color(colourHex));
-    beginShape();
-
-    for (let i = 0; i < this.points; i++) {
-      const a = (i / this.points) * TAU;
-
-      // Noise input: circle coordinates + time.
-      const n = noise(
-        cos(a) * this.wobbleFreq + 100,
-        sin(a) * this.wobbleFreq + 100,
-        this.t,
-      );
-
-      // Map noise to a small radius offset.
-      const rr = this.r + map(n, 0, 1, -this.wobble, this.wobble);
-
-      // Place the vertex around the center.
-      vertex(this.x + cos(a) * rr, this.y + sin(a) * rr);
-    }
-
-    endShape(CLOSE);
+    const size = this.r * 2;
+    rect(this.x - this.r, this.y - this.r, size, size);
   }
 }
 

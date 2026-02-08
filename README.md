@@ -1,19 +1,16 @@
 ## Project Title
 
-GBDA302 Week 4 Example 5: Blob Platformer (JSON + Classes)
+GBDA302 Week 4 SideQuest: Json file
 
 ---
 
 ## Authors
 
-Karen Cochrane and David Han
+Liza Storchak (Elizabeth)
 
 ---
 
 ## Description
-
-This matches the structure of the original blob sketch from Week 2 but moves
-details into classes.
 
 ---
 
@@ -23,7 +20,7 @@ Learning Goals:
 
 - - load JSON in preload()
 - create WorldLevel from JSON
-- create BlobPlayer
+- create SquarePlayer
 - update + draw each frame
 - handle input events (jump, optional next level)
 
