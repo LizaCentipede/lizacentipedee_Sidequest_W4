@@ -1,12 +1,14 @@
 ## Project Title
 
-Square shaped jumper
+The Square Shaped Jumper
 
 ---
 
 ## Group Members
 
-Liza Storchak (Elizabeth), 21060869, eestorch
+Liza Storchak (Elizabeth)
+21060869
+eestorch
 
 ---
 
@@ -34,8 +36,8 @@ One planned imporvment would be to make another level, and also to make the leve
 
 ## Assets
 
----
+## n/a
 
 ## References
 
----
+## n/a
