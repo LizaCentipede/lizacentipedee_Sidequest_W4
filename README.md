@@ -4,25 +4,19 @@ GBDA302 Week 4 SideQuest: Json file
 
 ---
 
-## Authors
+## Group Members
 
-Liza Storchak (Elizabeth)
+Liza Storchak (Elizabeth), 21060869, eestorch
 
 ---
 
 ## Description
 
----
+## Maneuver the square across the platforms. Try not to fall! The level is stored in the Json.
 
-## Learning Goals
+## Setup and Interaction Instructions
 
-Learning Goals:
-
-- - load JSON in preload()
-- create WorldLevel from JSON
-- create SquarePlayer
-- update + draw each frame
-- handle input events (jump, optional next level)
+Using the < > arrow keys to move and the space bar to jump.
 
 ---
 
